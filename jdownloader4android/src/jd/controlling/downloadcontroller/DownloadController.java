@@ -382,7 +382,7 @@ public class DownloadController extends PackageController<FilePackage, DownloadL
      * load all FilePackages/DownloadLinks from Database
      */
     public synchronized void initDownloadLinks() {
-        if (isLoadAllowed() == false) {
+        if (isLoadAllowed() == false || (packages!=null && packages.size()>0)) {
             /* loading is not allowed */
             return;
         }

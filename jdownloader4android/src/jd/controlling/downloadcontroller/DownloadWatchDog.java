@@ -23,7 +23,6 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.Locale;
 import java.util.concurrent.atomic.AtomicInteger;
 
 import jd.controlling.AccountController;
@@ -45,7 +44,6 @@ import org.appwork.controlling.StateMachine;
 import org.appwork.controlling.StateMachineInterface;
 import org.appwork.exceptions.WTFException;
 import org.appwork.storage.config.JsonConfig;
-import org.appwork.utils.Application;
 import org.appwork.utils.event.queue.QueueAction;
 import org.appwork.utils.logging2.LogSource;
 import org.jdownloader.logging.LogController;
@@ -394,7 +392,8 @@ public class DownloadWatchDog implements StateMachineInterface, IOPermission { /
      * @return
      */
     public DownloadControlInfo getNextDownloadLink(List<DownloadLink> possibleLinks, HashMap<String, java.util.List<Account>> accountCache, HashMap<String, PluginForHost> pluginCache, boolean forceDownload) {
-        if (accountCache == null) accountCache = new HashMap<String, java.util.List<Account>>();
+    	DownloadControlInfo ret = new DownloadControlInfo();
+    	if (accountCache == null) accountCache = new HashMap<String, java.util.List<Account>>();
         if (pluginCache == null) pluginCache = new HashMap<String, PluginForHost>();
         try {
             retryLoop: while (true) {
@@ -417,12 +416,10 @@ public class DownloadWatchDog implements StateMachineInterface, IOPermission { /
                     if (nextDownloadLink.getLinkStatus().isPluginActive() || (!nextDownloadLink.getLinkStatus().isStatus(LinkStatus.TODO) && !nextDownloadLink.getLinkStatus().hasStatus(LinkStatus.ERROR_IP_BLOCKED))) {
                         /* download is already in progress or not todo */
                         continue linkLoop;
-                    }
-                    DownloadControlInfo ret = new DownloadControlInfo();
+                    }                    
                     ret.byPassSimultanDownloadNum = true;
                     ret.link = nextDownloadLink;
-                    ret.account = AccountController.getInstance().getValidAccount(nextDownloadLink.getDefaultPlugin());
-                    return ret;
+                    ret.account = AccountController.getInstance().getValidAccount(nextDownloadLink.getDefaultPlugin());                    
                     /*if (!forceDownload && activeDownloadsbyHosts(nextDownloadLink.getHost()) >= this.getSimultanDownloadNumPerHost()) {
                         // ONLY when not forced! max downloads per host reached 
                         continue linkLoop;
@@ -547,7 +544,7 @@ public class DownloadWatchDog implements StateMachineInterface, IOPermission { /
         } catch (final Throwable e) {
             logger.log(e);
         }
-        return null;
+        return ret;
     }
 
     /**
@@ -780,7 +777,7 @@ public class DownloadWatchDog implements StateMachineInterface, IOPermission { /
             ls.reset();
         }
     }
-
+    
     public long getDownloadSpeedbyFilePackage(FilePackage pkg) {
         long speed = -1;
         synchronized (DownloadControllers) {
