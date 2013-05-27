@@ -389,5 +389,11 @@ public interface GeneralSettings extends ConfigInterface {
     int getSubfolderThreshold();
 
     void setSubfolderThreshold(int i);
-
+    
+    @AboutConfig
+    @DefaultBooleanValue(true)
+    @DescriptionForConfigEntry("Keep screen on while downloading?")
+    boolean isKeepScreenOnWhileDownloading();
+    
+    void setKeepScreenOnWhileDownloading(boolean b);
 }
