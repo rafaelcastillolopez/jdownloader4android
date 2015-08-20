@@ -1,0 +1,1 @@
+It's an android library which has been made using JDownloader sources, replacing all the things which doesn't compile in Dalvik VM/Android APIs.
